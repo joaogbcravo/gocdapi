@@ -25,3 +25,6 @@ class Stage(GoBase):
     def history(self, offset=0):
         url = self.build_url('history/%s' % offset)
         return self.get_json_data(url)
+
+    def __str__(self):
+        return 'Stage @ %s' % self.go_server.baseurl

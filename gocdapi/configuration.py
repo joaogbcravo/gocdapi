@@ -20,7 +20,7 @@ class Configuration(GoBase):
         path = 'go/api/admin/config.xml'
         super(self.__class__, self).__init__(go_server, path=path)
 
-    def _poll(self, data):
+    def poll(self):
         response = self.get_full_response(self.url)
         self.md5 = response.headers['x-cruise-config-md5']
         self.xml_config_data = response.text
@@ -91,3 +91,6 @@ class Configuration(GoBase):
 
         # push to the server
         self.push_xml_configuration(ET.tostring(xml_root))
+
+    def __str__(self):
+        return 'Configuration @ %s' % self.go_server.baseurl

@@ -14,20 +14,27 @@ class GoBase(object):
     """
     This appears to be the base object that all other Go objects are inherited from
     """
+
+    def __repr__(self):
+        return """<%s.%s %s>""" % (self.__class__.__module__, self.__class__.__name__, str(self))
+
+    def __str__(self):
+        raise NotImplementedError
+
     def __init__(self, go_server, path=None, data=None, poll=True):
         self._data = None
         self.url = None
         self.go_server = go_server
         self.set_self_url(path)
-        if poll:
-            self._poll(data)
 
-    def _poll(self, data):
-        if not data and self.url:
-            self._data = GoBase.get_data(self.url)
-        else:
+        if poll and self.url:
+            self._data = self._poll()
+        elif data:
             self._data = data
         self.poll()
+
+    def _poll(self):
+        return GoBase.get_data(self.url)
 
     def set_self_url(self, path):
         if path:

@@ -46,3 +46,6 @@ class Agent(GoBase):
     def job_run_history(self, offset=0):
         url = self.build_url('job_run_history/%s' % offset)
         return self.get_json_data(url)
+
+    def __str__(self):
+        return 'Agent @ %s' % self.go_server.baseurl

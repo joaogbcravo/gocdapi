@@ -16,12 +16,11 @@ class Pipeline(GoBase):
         super(self.__class__, self).__init__(go_server, data=data)
 
     def poll(self):
-        stages_data = self._data.pop('stages')
         self.__dict__.update(self._data)
-
         self.set_self_url('go/api/pipelines/%s/' % self.name)
 
-        for item in stages_data:
+        self.stages = []
+        for item in self._data['stages']:
             stage = Stage(self.go_server, self, item)
             self.stages.append(stage)
 
@@ -44,3 +43,6 @@ class Pipeline(GoBase):
     def history(self, offset=0):
         url = self.build_url('history/%s' % offset)
         return self.get_json_data(url)
+
+    def __str__(self):
+        return 'Pipeline @ %s' % self.go_server.baseurl

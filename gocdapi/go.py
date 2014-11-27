@@ -36,3 +36,9 @@ class Go(object):
 
     def delete_pipeline_group(self, group_name):
         return self.configuration.delete_pipeline_group(group_name)
+
+    def pipeline_exist(self, name):
+        for _, pipeline_group in self.pipeline_groups:
+            if any(name == pipe_name for pipe_name, pipe in pipeline_group):
+                return True
+        return False

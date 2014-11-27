@@ -5,6 +5,8 @@ Module for gocdapi pipeline groups
 from gocdapi.pipeline_group import PipelineGroup
 from gocdapi.gobase import GoBase
 
+from gocdapi.custom_exceptions import GoCdApiException
+
 
 class PipelineGroups(GoBase):
     """
@@ -12,7 +14,7 @@ class PipelineGroups(GoBase):
     """
 
     def __init__(self, go_server):
-        self.list = []
+        self._list = []
         path = 'go/api/config/pipeline_groups/'
         super(self.__class__, self).__init__(go_server, path=path)
 
@@ -20,19 +22,34 @@ class PipelineGroups(GoBase):
         data = self.load_json_data(self._data)
         for item in data:
             pipeline_group = PipelineGroup(self.go_server, item)
-            self.list.append(pipeline_group)
+            self._list.append(pipeline_group)
 
-    def get_all(self):
-        return self.list
+    def iterkeys(self):
+        for pipeline_group in self._list:
+            yield pipeline_group.name
 
-    def exist(self, name):
-        return any(name == group.name for group in self.list)
+    def iteritems(self):
+        for pipeline_group in self._list:
+            yield pipeline_group.name, pipeline_group
 
-    def pipeline_exist(self, name):
-        for group in self.get_all():
-            if any(name == pipe.name for pipe in group.get_pipelines()):
-                return True
-        return False
+    def keys(self):
+        return list(self.iterkeys())
 
-    def __contains__(self, pipeline_group_name):
-        return any(pipeline_group_name == group.name for group in self.list)
+    def __contains__(self, group_name):
+        return group_name in self.keys()
+
+    def __getitem__(self, group_name):
+        self_as_dict = dict(self.iteritems())
+        if group_name in self_as_dict:
+            return self_as_dict[group_name]
+        else:
+            raise GoCdApiException("No pipeline_group with the name %s ." % group_name)
+
+    def __iter__(self):
+        return self.iteritems()
+
+    def __len__(self):
+        return len(self.keys())
+
+    def __str__(self):
+        return 'Pipeline Group @ %s' % self.go_server.baseurl

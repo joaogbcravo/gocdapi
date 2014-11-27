@@ -5,6 +5,8 @@ Module for gocdapi pipeline group
 from gocdapi.gobase import GoBase
 from gocdapi.pipeline import Pipeline
 
+from gocdapi.custom_exceptions import GoCdApiException
+
 
 class PipelineGroup(GoBase):
     """
@@ -16,15 +18,38 @@ class PipelineGroup(GoBase):
         super(self.__class__, self).__init__(go_server, data=data)
 
     def poll(self):
-        pipelines_data = self._data.pop('pipelines')
         self.__dict__.update(self._data)
-
-        for item in pipelines_data:
+        self.pipelines = []
+        for item in self._data['pipelines']:
             pipeline = Pipeline(self.go_server, item)
             self.pipelines.append(pipeline)
 
-    def get_pipelines(self):
-        return self.pipelines
+    def iterkeys(self):
+        for pipeline in self.pipelines:
+            yield pipeline.name
 
-    def __contains__(self, pipeline_name):
-        return pipeline_name in self.pipelines
+    def iteritems(self):
+        for pipeline in self.pipelines:
+            yield pipeline.name, pipeline
+
+    def keys(self):
+        return list(self.iterkeys())
+
+    def __contains__(self, name):
+        return name in self.keys()
+
+    def __getitem__(self, name):
+        self_as_dict = dict(self.iteritems())
+        if name in self_as_dict:
+            return self_as_dict[name]
+        else:
+            raise GoCdApiException("No pipeline with the name %s ." % name)
+
+    def __iter__(self):
+        return self.iteritems()
+
+    def __len__(self):
+        return len(self.keys())
+
+    def __str__(self):
+        return 'Pipeline @ %s' % self.go_server.baseurl
