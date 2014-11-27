@@ -1,6 +1,8 @@
 gocdapi
 ==========
 
+.. image:: https://travis-ci.org/joaogbcravo/gocdapi.png?branch=master
+        :target: https://travis-ci.org/joaogbcravo/gocdapi
 
 About this library
 -------------------
