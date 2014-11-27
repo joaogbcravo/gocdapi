@@ -2,9 +2,10 @@ language: python
 
 python:
     - "2.7"
+    - "3.3"
 
 install:
-    - pip install pep8 pylint
+    - pip install pep8 pylint nose
     - python setup.py develop
 
 script:
