@@ -1,0 +1,12 @@
+language: python
+
+python:
+    - "2.7"
+
+install:
+    - pip install pep8 pylint nosetest
+    - python setup.py develop
+
+script:
+    - pep8 --ignore=E501 gocdapi/*.py
+    - pylint --rcfile=pylintrc gocdapi/*.py
