@@ -15,16 +15,14 @@ class TestPipelines(BaseSystemTest):
         self.go.create_pipeline(self.pipeline_group_name(), EMPTY_PIPELINE % pipeline_name)
         self.assert_pipeline_is_present(pipeline_name)
 
-    def test_create_pipeline_group(self):
+    def test_create_delete_pipeline_group(self):
         pipeline_group = 'test_pipeline_group_%s' % random_string()
         self.go.create_pipeline_group(pipeline_group)
         self.assertTrue(pipeline_group in self.go.pipeline_groups)
 
-    def test_delete_pipeline_group(self):
-        pipeline_group = 'test_pipeline_group_%s' % random_string()
-        self.go.create_pipeline_group(pipeline_group)
         self.go.delete_pipeline_group(pipeline_group)
         self.assertFalse(pipeline_group in self.go.pipeline_groups)
+
 
 
 if __name__ == '__main__':

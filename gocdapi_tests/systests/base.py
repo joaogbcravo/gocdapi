@@ -1,6 +1,7 @@
 
 import unittest
 import logging
+import time
 #import gocdapi_tests.systests
 
 from gocdapi_tests.systests.pipeline_configs import EMPTY_PIPELINE
@@ -37,4 +38,12 @@ class BaseSystemTest(unittest.TestCase):
         pipeline = self.go.create_pipeline(name, config)
 
     def assert_pipeline_is_present(self, name):
-        self.assertTrue(self.go.pipeline_groups.pipeline_exist(name), 'Pipeline %r is absent in Go.' % name)
+        self.assertTrue(self.go.pipeline_exist(name), 'Pipeline %r is absent in Go.' % name)
+
+    def wait_for_agent_reconnection(self, agent_uuid):
+        for _ in xrange(3):
+            log.info("Waiting for agent %s connect" % agent_uuid)
+            time.sleep(10)
+            if agent_uuid in self.go.agents:
+                return
+        raise Exception("Agent %s didn't connect again to the server" % agent_uuid)

@@ -12,22 +12,14 @@ import time
 class TestAgents(BaseSystemTest):
 
     def test_delete_agent(self):
-        return
         _, agent = self.go.agents.iteritems().next()
         agent.disable()
         agent.delete()
         self.assertTrue(agent not in self.go.agents)
-        print
-        for _ in xrange(3):
-            print "Waiting for agent %s connect" % agent.uuid
-            time.sleep(10)
-            if agent.uuid in self.go.agents:
-                return
-        raise Exception("Agent couldn't connect again to the server")
+        self.wait_for_agent_reconnection(agent.uuid)
 
     def test_enable_disable_agent(self):
         _, agent = self.go.agents.iteritems().next()
-
         agent.disable()
         self.assertTrue(agent.is_disabled())
         self.assertFalse(agent.is_enabled())
