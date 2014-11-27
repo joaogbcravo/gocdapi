@@ -3,9 +3,13 @@ Module for GoBase class
 """
 
 import logging
-
 from json import loads as jsonloads
-from urlparse import urljoin
+
+try:
+    from urlparse import urljoin
+except ImportError:
+    # Python3
+    from urllib.parse import urljoin
 
 from requests import get, post
 from gocdapi.custom_exceptions import GoCdApiException
