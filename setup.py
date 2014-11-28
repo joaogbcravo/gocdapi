@@ -29,6 +29,8 @@ setup(
     zip_safe=True,
     include_package_data=False,
     install_requires=['requests>=2.3.0'],
+    test_suite='nose.collector',
+    tests_require=['mock', 'nose', 'coverage'],
     entry_points=GLOBAL_ENTRY_POINTS,
     description=SHORT_DESCRIPTION,
     long_description=DESCRIPTION,
