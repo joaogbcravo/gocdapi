@@ -63,7 +63,6 @@ class Agent(GoBase):
         Will do a POST request to go/api/agents/UUID/enable
         Does a repoll after the request for enabling the agent.
         """
-        return self.status != "Disabled"
         url = self.build_url('enable')
         self.do_post(url)
         self.repoll_from_agents_url()
@@ -103,5 +102,3 @@ class Agent(GoBase):
         """
         url = self.build_url('job_run_history/%s' % offset)
         return self.get_json_data(url)
-
-
