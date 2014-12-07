@@ -45,5 +45,8 @@ class TestPipeline(unittest.TestCase):
         self.go = Go(self.baseurl)
         self.pipeline = Pipeline(self.go, self.DATA0)
 
+    def test_repr(self):
+        repr(self.pipeline)
+
 if __name__ == '__main__':
     unittest.main()

@@ -27,9 +27,9 @@ class TestAgents(unittest.TestCase):
         ]
     """
 
-    @mock.patch.object(Agents, '_poll')
-    def setUp(self, _poll_agents):
-        _poll_agents.return_value = self.DATA0
+    @mock.patch.object(Agents, 'get_data')
+    def setUp(self, get_data_agents):
+        get_data_agents.return_value = self.DATA0
         self.baseurl = 'http://localhost:8080'
 
         go = Go(self.baseurl)
@@ -55,7 +55,7 @@ class TestAgents(unittest.TestCase):
             self.agents[uuid]
 
     def test_agents_iterable(self):
-        for name, agent in self.agents:
+        for agent in self.agents.values():
             self.assertIsInstance(agent, Agent)
 
     def test_repr(self):

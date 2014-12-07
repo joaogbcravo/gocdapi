@@ -12,18 +12,16 @@ class TestPipelines(BaseSystemTest):
 
     def test_create_pipeline(self):
         pipeline_name = 'test_pipeline_%s' % random_string()
-        self.go.create_pipeline(self.pipeline_group_name(), EMPTY_PIPELINE % pipeline_name)
+        self.go.admin.create_pipeline_from_xml(self.pipeline_group_name(), pipeline_name, EMPTY_PIPELINE % pipeline_name)
         self.assert_pipeline_is_present(pipeline_name)
 
     def test_create_delete_pipeline_group(self):
         pipeline_group = 'test_pipeline_group_%s' % random_string()
-        self.go.create_pipeline_group(pipeline_group)
+        self.go.admin.create_pipeline_group(pipeline_group)
         self.assertTrue(pipeline_group in self.go.pipeline_groups)
 
-        self.go.delete_pipeline_group(pipeline_group)
+        self.go.admin.delete_pipeline_group(pipeline_group)
         self.assertFalse(pipeline_group in self.go.pipeline_groups)
-
-
 
 if __name__ == '__main__':
     unittest.main()

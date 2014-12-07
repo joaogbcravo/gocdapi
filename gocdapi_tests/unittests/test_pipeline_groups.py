@@ -21,10 +21,10 @@ class TestPipelineGroups(unittest.TestCase):
         ]
     """
 
-    @mock.patch.object(PipelineGroups, '_poll')
-    def setUp(self, _poll_pipeline_groups):
-        _poll_pipeline_groups.return_value = self.DATA0
-        self.baseurl = 'http://localhost:8080'
+    @mock.patch.object(PipelineGroups, 'get_data')
+    def setUp(self, get_data_pipeline_groups):
+        get_data_pipeline_groups.return_value = self.DATA0
+        self.baseurl = 'http://dummyurl'
 
         go = Go(self.baseurl)
         self.pipeline_groups = go.pipeline_groups
@@ -49,14 +49,11 @@ class TestPipelineGroups(unittest.TestCase):
             self.pipeline_groups[group_name]
 
     def test_pipeline_groups_iterable(self):
-        for name, pipeline_group in self.pipeline_groups:
+        for pipeline_group in self.pipeline_groups.values():
             self.assertIsInstance(pipeline_group, PipelineGroup)
 
     def test_repr(self):
         repr(self.pipeline_groups)
-
-    def test_there_is_pipeline_groups(self):
-        self.assertTrue(self.pipeline_groups)
 
 
 if __name__ == '__main__':

@@ -8,7 +8,7 @@ from gocdapi.agent import Agent
 
 from gocdapi.custom_exceptions import GoCdApiException
 
-class TestAgents(unittest.TestCase):
+class TestAgent(unittest.TestCase):
 
     DATA0 = {
         "resources": [],
@@ -28,14 +28,14 @@ class TestAgents(unittest.TestCase):
         self.go = Go(self.baseurl)
         self.agent = Agent(self.go, self.DATA0)
 
-    def test_agent_enabled(self):
+    @mock.patch.object(Agent, 'get_json_data')
+    def test_agent_is_enabled_or_disabled(self, agent_get_json_data):
+        agent_get_json_data.return_value = [self.DATA0]
         self.assertTrue(self.agent.is_enabled())
-        self.assertFalse(self.agent.is_disabled())
 
-    def test_agent_disabled(self):
-        self.agent.status = "Disabled"
+        self.DATA0['status'] = "Disabled"
+        agent_get_json_data.return_value = [self.DATA0]
         self.assertFalse(self.agent.is_enabled())
-        self.assertTrue(self.agent.is_disabled())
 
     def test_repr(self):
         print repr(self.agent)

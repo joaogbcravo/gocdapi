@@ -28,11 +28,11 @@ class BaseSystemTest(unittest.TestCase):
 
     def _delete_test_pipelines_group(self, name):
         if name in self.go.pipeline_groups:
-            self.go.delete_pipeline_group(name)
+            self.go.admin.delete_pipeline_group(name)
 
     def _create_test_pipelines_group(self, name):
         if name not in self.go.pipeline_groups:
-            pipeline_group = self.go.create_pipeline_group(name)
+            pipeline_group = self.go.admin.create_pipeline_group(name)
 
     def _create_pipeline(self, name='DUMMY', config=EMPTY_PIPELINE):
         pipeline = self.go.create_pipeline(name, config)

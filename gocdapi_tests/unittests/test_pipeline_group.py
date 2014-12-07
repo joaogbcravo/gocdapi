@@ -91,6 +91,7 @@ class TestPipelineGroup(unittest.TestCase):
 
     def test_get_pipeline(self):
         pipeline_name = 'Super_pipeline'
+        print self.pipeline_group[pipeline_name]
         pipeline = self.pipeline_group[pipeline_name]
         self.assertIsInstance(pipeline, Pipeline)
 
@@ -99,7 +100,7 @@ class TestPipelineGroup(unittest.TestCase):
             self.pipeline_group[pipeline_name]
 
     def test_pipeline_group_iterable(self):
-        for name, pipeline in self.pipeline_group:
+        for pipeline in self.pipeline_group.list_of_pipelines():
             self.assertIsInstance(pipeline, Pipeline)
 
     def test_repr(self):
