@@ -38,7 +38,7 @@ class PipelineGroups(dict, GoBase):
             GoCdApiException: When no PipelineGroups with the 'group_name' was found
         """
         try:
-            #self.repoll()
+            self.repoll()
             return dict.__getitem__(self, group_name)
         except KeyError:
             raise GoCdApiException("No PipelineGroup with name %s connected to server." % group_name)

@@ -27,7 +27,9 @@ class TestPipelineGroups(unittest.TestCase):
         self.baseurl = 'http://dummyurl'
 
         go = Go(self.baseurl)
+
         self.pipeline_groups = go.pipeline_groups
+        print self.pipeline_groups.get_data
 
     def test_pipeline_group_exists(self):
         group_name = 'Super_group'
@@ -39,8 +41,11 @@ class TestPipelineGroups(unittest.TestCase):
     def test_check_URL(self):
         self.assertEquals(self.pipeline_groups.url, '%s/go/api/config/pipeline_groups/' % self.baseurl)
 
-    def test_get_pipeline_group(self):
+    @mock.patch.object(PipelineGroups, 'get_data')
+    def test_get_pipeline_group(self, get_data_pipeline_groups):
+        get_data_pipeline_groups.return_value = self.DATA0
         group_name = 'Super_group'
+        print self.pipeline_groups.get_data
         pipeline_group = self.pipeline_groups[group_name]
         self.assertIsInstance(pipeline_group, PipelineGroup)
 

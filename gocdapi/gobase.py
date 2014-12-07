@@ -65,7 +65,7 @@ class GoBase(object):
         Gets information doing a GET request to url's object
         """
         self._data = self.get_data()
-        self.poll()
+        self._poll()
 
     def set_self_url(self, path):
         """Set the url of object
