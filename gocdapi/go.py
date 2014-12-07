@@ -1,44 +1,71 @@
 """
-Module for gocdapi Go object
+Module for gocdapi Go class
 """
 
+from gocdapi.admin import Admin
 from gocdapi.agents import Agents
-from gocdapi.configuration import Configuration
 from gocdapi.pipeline_groups import PipelineGroups
 
 
 class Go(object):
     """
-    Represents a Go environment.
+    Class that represents Go Server environment.
     """
     def __init__(self, baseurl, username=None, password=None):
+        """Inits Go objects.
+
+        Args:
+            baseurl (str): The base url of Go Server
+            username (str): The username to login in the Go Server
+            password (str): The username's password
+        """
         self.baseurl = baseurl
         self.username = username
         self.password = password
 
     @property
     def agents(self):
+        """Return agents of the Go Server
+        """
         return Agents(self)
 
     @property
     def pipeline_groups(self):
+        """Return Pipeline Groups of the Go Server
+        """
         return PipelineGroups(self)
 
     @property
-    def configuration(self):
-        return Configuration(self)
+    def pipelines(self):
+        """Return Pipeline Groups of the Go Server
+        """
+        return dict(self._iter_through_pipelines())
 
-    def create_pipeline(self, group, config):
-        return self.configuration.create_pipeline_from_xml(group, config)
-
-    def create_pipeline_group(self, group_name):
-        return self.configuration.create_pipeline_group(group_name)
-
-    def delete_pipeline_group(self, group_name):
-        return self.configuration.delete_pipeline_group(group_name)
+    @property
+    def admin(self):
+        """Return an Admin object
+        """
+        return Admin(self)
 
     def pipeline_exist(self, name):
-        for _, pipeline_group in self.pipeline_groups:
-            if any(name == pipe_name for pipe_name, pipe in pipeline_group):
+        """ Check if pipeline exists.
+
+        Args:
+            name (str): name of the pipeline to find
+
+        Returns:
+            bool: True if pipeline with the given name exists
+        """
+        for pipeline_group in self.pipeline_groups.values():
+            if any(name == pipe_name for pipe_name in pipeline_group):
                 return True
         return False
+
+    def _iter_through_pipelines(self):
+        """ Return a iterable containing every pipeline
+
+        Generator: Yields a pipeline
+        """
+        for pipeline_group in self.pipeline_groups.values():
+            for pipeline in pipeline_group:
+                yield pipeline

@@ -1,5 +1,5 @@
 """
-Module for gocdapi pipeline group
+Module for gocdapi PipelineGroup class
 """
 
 from gocdapi.gobase import GoBase
@@ -10,46 +10,75 @@ from gocdapi.custom_exceptions import GoCdApiException
 
 class PipelineGroup(GoBase):
     """
-    Class to hold information on pipeline group of Go Server
+    Class to hold information of PipelineGroup objects
+
+    This class can act like a read-only iterable.
     """
 
     def __init__(self, go_server, data):
-        self.pipelines = []
-        super(self.__class__, self).__init__(go_server, data=data)
-
-    def poll(self):
-        self.__dict__.update(self._data)
-        self.pipelines = []
-        for item in self._data['pipelines']:
-            pipeline = Pipeline(self.go_server, item)
-            self.pipelines.append(pipeline)
-
-    def iterkeys(self):
-        for pipeline in self.pipelines:
-            yield pipeline.name
-
-    def iteritems(self):
-        for pipeline in self.pipelines:
-            yield pipeline.name, pipeline
-
-    def keys(self):
-        return list(self.iterkeys())
-
-    def __contains__(self, name):
-        return name in self.keys()
-
-    def __getitem__(self, name):
-        self_as_dict = dict(self.iteritems())
-        if name in self_as_dict:
-            return self_as_dict[name]
-        else:
-            raise GoCdApiException("No pipeline with the name %s ." % name)
+        self._pipelines = {}
+        self.name = ""
+        GoBase.__init__(self, go_server, data=data)
 
     def __iter__(self):
-        return self.iteritems()
+        """Iter over pipelines from this pipeline group
+
+        Forwards this method to the _pipelines attribute method with the same name.
+
+        Return:
+            iterable: pipelines
+        """
+        return self._pipelines.__iter__()
 
     def __len__(self):
-        return len(self.keys())
+        """Get the number of pipelines that this pipeline group have
+
+        Forwards this method to the _pipelines attribute method with the same name.
+
+        Return:
+            int: number of pipelines
+        """
+        return self._pipelines.__len__()
+
+    def __getitem__(self, name):
+        """Get a pipeline from this pipeline group with the 'name'
+
+        Forwards this method to the _pipelines attribute method with the same name.
+
+        Args:
+            name (str): the name of the pipeline that it is looking for
+
+        Return:
+            Pipeline: the pipeline with the 'name' found
+
+        Raises:
+            GoCdApiException: When no pipeline with the 'name' was found
+        """
+        try:
+            return self._pipelines.__getitem__(name)
+        except KeyError:
+            raise GoCdApiException("No pipeline with the name %s ." % name)
 
     def __str__(self):
-        return 'Pipeline @ %s' % self.go_server.baseurl
+        """Returns a pretty representation of the object
+
+        Returns:
+            str: representation of the object
+        """
+        return 'Pipeline Group @ %s' % self.go_server.baseurl
+
+    def list_of_pipelines(self):
+        """Get all pipelines for this pipeline group in a list container.
+        """
+        return self._pipelines.values()
+
+    def _poll(self):
+        """Will store the pipelines of this group in a hash
+
+        Uses _data attribute populated by inherited methods, creating Pipeline objects with that information.
+        The Pipeline's objects are saved as a pair (key,value) with their name as key.
+        """
+        self.name = self._data["name"]
+        for item in self._data['pipelines']:
+            pipeline = Pipeline(self.go_server, item)
+            self._pipelines[pipeline.name] = pipeline

@@ -1,5 +1,5 @@
 """
-Module for gocdapi pipeline groups
+Module for gocdapi PipelineGroups class
 """
 
 from gocdapi.pipeline_group import PipelineGroup
@@ -8,48 +8,57 @@ from gocdapi.gobase import GoBase
 from gocdapi.custom_exceptions import GoCdApiException
 
 
-class PipelineGroups(GoBase):
+class PipelineGroups(dict, GoBase):
     """
-    Class to hold the pipelines groups of Go server
-    """
+    Class to hold information on a collection of PipelineGroups objects
 
+    This class acts like a dictionary
+    """
     def __init__(self, go_server):
-        self._list = []
-        path = 'go/api/config/pipeline_groups/'
-        super(self.__class__, self).__init__(go_server, path=path)
+        """Inits PipelineGroups objects.
 
-    def poll(self):
-        data = self.load_json_data(self._data)
-        for item in data:
-            pipeline_group = PipelineGroup(self.go_server, item)
-            self._list.append(pipeline_group)
-
-    def iterkeys(self):
-        for pipeline_group in self._list:
-            yield pipeline_group.name
-
-    def iteritems(self):
-        for pipeline_group in self._list:
-            yield pipeline_group.name, pipeline_group
-
-    def keys(self):
-        return list(self.iterkeys())
-
-    def __contains__(self, group_name):
-        return group_name in self.keys()
+        Args:
+            go_server (Go): A Go object which this PipelineGroups belongs to.
+        """
+        dict.__init__(self)
+        GoBase.__init__(self, go_server, path='go/api/config/pipeline_groups/')
 
     def __getitem__(self, group_name):
-        self_as_dict = dict(self.iteritems())
-        if group_name in self_as_dict:
-            return self_as_dict[group_name]
-        else:
-            raise GoCdApiException("No pipeline_group with the name %s ." % group_name)
+        """Custom __getitem__ method
 
-    def __iter__(self):
-        return self.iteritems()
+        Overrides the default __getitem__ method from dict class to raise a custom exception when the item doen't exist
 
-    def __len__(self):
-        return len(self.keys())
+        Args:
+            group_name (str): the name of group of pipelines that it is looking for
+
+        Return:
+            PipelineGroup: the PipelineGroups with the 'group_name' found
+
+        Raises:
+            GoCdApiException: When no PipelineGroups with the 'group_name' was found
+        """
+        try:
+            #self.repoll()
+            return dict.__getitem__(self, group_name)
+        except KeyError:
+            raise GoCdApiException("No PipelineGroup with name %s connected to server." % group_name)
 
     def __str__(self):
-        return 'Pipeline Group @ %s' % self.go_server.baseurl
+        """Returns a pretty representation of the object
+
+        Returns:
+            str: representation of the object
+        """
+        return 'Pipelines Groups @ %s' % self.go_server.baseurl
+
+    def _poll(self):
+        """Will get information of all PipelineGroups in the Go server.
+
+        Uses _data attribute populated by inherited methods, creating PipelineGroups objects with that information.
+        The PipelineGroups's objects are saved as a pair (key,value) with their name as key.
+        """
+        data = self.load_json_data(self._data)
+        for item in data:
+
+            pipeline_group = PipelineGroup(self.go_server, item)
+            self[pipeline_group.name] = pipeline_group

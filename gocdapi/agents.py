@@ -1,5 +1,5 @@
 """
-Module for gocdapi agents
+Module for gocdapi Agents class
 """
 
 from gocdapi.agent import Agent
@@ -8,47 +8,56 @@ from gocdapi.gobase import GoBase
 from gocdapi.custom_exceptions import GoCdApiException
 
 
-class Agents(GoBase):
+class Agents(dict, GoBase):
     """
-    Class to hold information on a collection of agents
+    Class to hold information on a collection of Agent objects
+
+    This class acts like a dictionary
     """
 
     def __init__(self, go_server):
-        self._list = []
-        super(self.__class__, self).__init__(go_server, path='go/api/agents/')
+        """Inits Agents objects.
 
-    def poll(self):
+        Args:
+            go_server (Go): A Go object which this agent belongs to.
+        """
+        dict.__init__(self)
+        GoBase.__init__(self, go_server, path='go/api/agents/')
+
+    def __getitem__(self, uuid):
+        """Custom __getitem__ method
+
+        Overrides the default __getitem__ method from dict class to raise a custom exception when the item doen't exist
+
+        Args:
+            uuid (str): the uuid of the Agent that it is looking for
+
+        Return:
+            Agent: the Agent with the 'uuid' found
+
+        Raises:
+            GoCdApiException: When no Agent with the 'uuid' was found
+        """
+        try:
+            return dict.__getitem__(self, uuid)
+        except KeyError:
+            raise GoCdApiException("No agent with uuid %s connected to server." % uuid)
+
+    def __str__(self):
+        """Returns a pretty representation of the object
+
+        Returns:
+            str: representation of the object
+        """
+        return 'Agents @ %s' % self.go_server.baseurl
+
+    def _poll(self):
+        """Will get information of all agents in the Go server.
+
+        Uses _data attribute populated by inherited methods, creating Agent objects with that information.
+        The Agent's objects are saved as a pair (key,value) with their uuid as key.
+        """
         data = self.load_json_data(self._data)
         for item in data:
             agent = Agent(self.go_server, item)
-            self._list.append(agent)
-
-    def iterkeys(self):
-        for agent in self._list:
-            yield agent.uuid
-
-    def iteritems(self):
-        for agent in self._list:
-            yield agent.uuid, agent
-
-    def keys(self):
-        return list(self.iterkeys())
-
-    def __contains__(self, uuid):
-        return uuid in self.keys()
-
-    def __getitem__(self, uuid):
-        self_as_dict = dict(self.__iter__())
-        if uuid in self_as_dict:
-            return self_as_dict[uuid]
-        else:
-            raise GoCdApiException("No agent with uuid %s connected to server." % uuid)
-
-    def __iter__(self):
-        return self.iteritems()
-
-    def __len__(self):
-        return len(self.keys())
-
-    def __str__(self):
-        return 'Agents @ %s' % self.go_server.baseurl
+            self[agent.uuid] = agent

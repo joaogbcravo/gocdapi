@@ -28,15 +28,6 @@ class Agent(GoBase):
         """
         return 'Agent @ %s' % self.go_server.baseurl
 
-    def poll(self):
-        """Will create and define the attributes of the agent.
-
-        Uses _data attribute populated by inherited methods, updating object attributes using the bunch pattern.
-        Also sets the agent url.
-        """
-        self.__dict__.update(self._data)
-        self.set_self_url('go/api/agents/%s/' % self.uuid)
-
     def repoll_from_agents_url(self):
         """Request to the server new agents configuration to upload agent object
 
@@ -44,6 +35,7 @@ class Agent(GoBase):
         to get information about all the agents, and then update the actual object with the right information.
         """
         agents_data = self.get_json_data(self.build_url_with_base('go/api/agents'))
+        print agents_data, "<---"
         self._data = next(data for (index, data) in enumerate(agents_data) if data["uuid"] == self.uuid)
         self.__dict__.update(self._data)
 
@@ -53,29 +45,26 @@ class Agent(GoBase):
         Does a repoll first to get updated data.
 
         Returns:
-            bool: True if not Disabled
+            bool: True if enabled
         """
+        self.repoll_from_agents_url()
         return self.status != "Disabled"
 
     def enable(self):
         """Enables the agent
 
         Will do a POST request to go/api/agents/UUID/enable
-        Does a repoll after the request for enabling the agent.
         """
         url = self.build_url('enable')
         self.do_post(url)
-        self.repoll_from_agents_url()
 
     def disable(self):
         """Disables the agent
 
         Will do a POST request to go/api/agents/UUID/disable
-        Does a repoll after the request for enabling the agent.
         """
         url = self.build_url('disable')
         self.do_post(url)
-        self.repoll_from_agents_url()
 
     def delete(self):
         """Deletes the agent
@@ -97,8 +86,18 @@ class Agent(GoBase):
             offset (int): how many instances to skip
 
         Returns:
-            str: json object representing job history
+            str: JSON representing job history
 
         """
         url = self.build_url('job_run_history/%s' % offset)
         return self.get_json_data(url)
+
+    def _poll(self):
+        """Will create and define the attributes of the agent.
+
+        Uses _data attribute populated by inherited methods, updating object attributes using the bunch pattern.
+        Also sets the agent url.
+        """
+        print self._data
+        self.__dict__.update(self._data)
+        self.set_self_url('go/api/agents/%s/' % self.uuid)
