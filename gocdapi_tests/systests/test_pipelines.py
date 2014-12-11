@@ -12,7 +12,7 @@ class TestPipelines(BaseSystemTest):
 
     def test_create_pipeline(self):
         pipeline_name = 'test_pipeline_%s' % random_string()
-        self.go.admin.create_pipeline_from_xml(self.pipeline_group_name(), pipeline_name, EMPTY_PIPELINE % pipeline_name)
+        self.go.admin.create_pipeline_from_xml(self.pipeline_group_name(), EMPTY_PIPELINE % pipeline_name)
         self.assert_pipeline_is_present(pipeline_name)
 
     def test_create_delete_pipeline_group(self):

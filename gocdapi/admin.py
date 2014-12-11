@@ -3,17 +3,13 @@ Module for gocdapi Admin class
 """
 
 from gocdapi.gobase import GoBase
-from gocdapi.custom_exceptions import GoCdApiException
-
-import xml.etree.ElementTree as ET
+from gocdapi.utils.config_xml import ConfigXML
 
 
 class Admin(GoBase):
-    """Access admin functions of a Go server
-
-    TODO: Some methods should be refactored.
     """
-
+    Access admin functions of a Go server
+    """
     def __init__(self, go_server):
         """Inits Admin objects.
 
@@ -43,75 +39,97 @@ class Admin(GoBase):
         return self.do_post(url)
 
     def _poll(self):
+        """ Do nothing
+
+        Should be implemented to not be raised a NotImplementedError
+        """
         pass
 
     def _poll_configuration(self):
+        """ Polls Go configuration
+
+        Will do a GET request to go/api/admin/config.xml
+
+        Returns:
+            tuple (string, string): md5 of the config when polled, config xml data
+        """
         url = self.build_url('config.xml')
         response = self.get_full_response(url)
         md5 = response.headers['x-cruise-config-md5']
         xml_config_data = response.text
-        return url, md5, xml_config_data
+        return md5, xml_config_data
 
-    def push_xml_configuration(self, url, md5, xml_data):
+    def push_xml_configuration(self, md5, xml_data):
+        """ Push a xml data as config to the Go server
+
+        Args:
+            md5 (string): md5 when config was pulled
+            xml_data(string): new configuration to be pushed to the server
+
+        Will do a POST request to go/api/admin/config.xml
+        """
+        url = self.build_url('config.xml')
         data = {'xmlFile': xml_data, 'md5': md5}
-        return self.pust_to_server(url, data=data)
+        self.do_post(url, data=data)
 
-    def pust_to_server(self, url, data):
-        return self.do_post(url, data=data)
+    def create_pipeline_group(self, group_name):
+        """ Creates a pipeline group in the Go Server
 
-    def create_pipeline_group(self, group):
-        url, md5, xml_config_data = self._poll_configuration()
-        # Check if group exists
-        xml_root = ET.fromstring(xml_config_data)
+        Will do a POST request to go/api/admin/config.xml
 
-        pipeline_group = xml_root.find('pipelines[@group="%s"]' % group)
-        if pipeline_group is not None:
-            raise GoCdApiException("Pipeline group '%s' already exist." % group)
+        Args:
+            group_name(str): name of the group to be created
+        """
+        md5, xml_config_data = self._poll_configuration()
 
-        # insert xml_data as a child
-        pipeline_group_xml_data = '<pipelines group="%s"/>' % group
-        xml_root.insert(1, ET.fromstring(pipeline_group_xml_data))
+        config_xml = ConfigXML(xml_config_data)
+        config_xml.create_pipeline_group(group_name)
 
-        # push to the server
-        self.push_xml_configuration(url, md5, ET.tostring(xml_root))
+        self.push_xml_configuration(md5, config_xml)
 
     def delete_pipeline_group(self, group_name):
-        url, md5, xml_config_data = self._poll_configuration()
-        # Check if group exists
-        xml_root = ET.fromstring(xml_config_data)
+        """ Deletes a pipeline group in the Go Server
 
-        pipeline_group = Admin._get_pipeline_group_from_xml(xml_root, group_name)
-        xml_root.remove(pipeline_group)
+        Will do a POST request to go/api/admin/config.xml
 
-        # push to the server
-        self.push_xml_configuration(url, md5, ET.tostring(xml_root))
+        Args:
+            group_name(str): name of the group to be deleted
+        """
+        md5, xml_config_data = self._poll_configuration()
 
-    def create_pipeline_from_xml(self, group, name, pipeline_xml_data):
-        return self.update_pipeline_from_xml(group, name, pipeline_xml_data, False)
+        config_xml = ConfigXML(xml_config_data)
+        config_xml.remove_pipeline_group(group_name)
 
-    def update_pipeline_from_xml(self, group, name, pipeline_xml_data, new=True):
-        url, md5, xml_config_data = self._poll_configuration()
-        # Check if group exists
-        xml_root = ET.fromstring(xml_config_data)
+        self.push_xml_configuration(md5, config_xml)
 
-        pipeline_group = Admin._get_pipeline_group_from_xml(xml_root, group)
+    def update_pipeline_from_xml(self, pipeline_xml_data):
+        """ Updates a pipeline in the Go Server
 
-        pipeline = pipeline_group.find('pipeline[@name="%s"]' % name)
-        if pipeline is not None:
-            if new:
-                raise GoCdApiException("A pipeline with name '%s' already exist." % name)
-            else:
-                pipeline_group.remove(pipeline)
+        Will do a POST request to go/api/admin/config.xml
 
-        # insert xml_data as a child
-        pipeline_group.append(ET.fromstring(pipeline_xml_data))
+        Args:
+            pipeline_xml_data(str): xml data of pipeline to be updated
+        """
+        md5, xml_config_data = self._poll_configuration()
 
-        # push to the server
-        self.push_xml_configuration(url, md5, ET.tostring(xml_root))
+        config_xml = ConfigXML(xml_config_data)
+        config_xml.update_pipeline_from_xml_string(pipeline_xml_data)
 
-    @staticmethod
-    def _get_pipeline_group_from_xml(xml_root, group):
-        pipeline_group = xml_root.find('pipelines[@group="%s"]' % group)
-        if pipeline_group is None:
-            raise GoCdApiException("Pipeline group '%s' doesn't exist." % group)
-        return pipeline_group
+        self.push_xml_configuration(md5, config_xml)
+
+    def create_pipeline_from_xml(self, group_name, pipeline_xml_data):
+        """ Creates a pipeline inside a group in the Go Server
+
+        Will do a POST request to go/api/admin/config.xml
+
+        Args:
+            group_name(str): name of pipeline group which pipeline should belong
+            pipeline_xml_data(str): xml data of pipeline to be updated
+        """
+        md5, xml_config_data = self._poll_configuration()
+
+        config_xml = ConfigXML(xml_config_data)
+        config_xml.update_pipeline_from_xml_string(group_name, pipeline_xml_data)
+
+        self.push_xml_configuration(md5, config_xml)
+
