@@ -132,4 +132,3 @@ class Admin(GoBase):
         config_xml.update_pipeline_from_xml_string(group_name, pipeline_xml_data)
 
         self.push_xml_configuration(md5, config_xml)
-
