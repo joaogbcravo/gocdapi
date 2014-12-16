@@ -38,7 +38,7 @@ class TestAgent(unittest.TestCase):
         self.assertFalse(self.agent.is_enabled())
 
     def test_repr(self):
-        print repr(self.agent)
+        self.assertEquals(str(self.agent), 'Agent @ %s' % self.baseurl)
 
 if __name__ == '__main__':
     unittest.main()

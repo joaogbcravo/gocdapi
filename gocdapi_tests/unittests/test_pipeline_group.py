@@ -91,7 +91,6 @@ class TestPipelineGroup(unittest.TestCase):
 
     def test_get_pipeline(self):
         pipeline_name = 'Super_pipeline'
-        print self.pipeline_group[pipeline_name]
         pipeline = self.pipeline_group[pipeline_name]
         self.assertIsInstance(pipeline, Pipeline)
 
@@ -104,7 +103,7 @@ class TestPipelineGroup(unittest.TestCase):
             self.assertIsInstance(pipeline, Pipeline)
 
     def test_repr(self):
-        repr(self.pipeline_group)
+        self.assertEquals(str(self.pipeline_group), 'Pipeline Group @ %s' % self.baseurl)
 
     def test_there_is_pipeline_group(self):
         self.assertTrue(self.pipeline_group)

@@ -59,7 +59,7 @@ class TestAgents(unittest.TestCase):
             self.assertIsInstance(agent, Agent)
 
     def test_repr(self):
-        repr(self.agents)
+        self.assertEquals(str(self.agents), 'Agents @ %s' % self.baseurl)
 
     def test_there_is_agents(self):
         self.assertTrue(self.agents)

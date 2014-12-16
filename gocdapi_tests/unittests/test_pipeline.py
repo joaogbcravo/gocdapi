@@ -46,7 +46,8 @@ class TestPipeline(unittest.TestCase):
         self.pipeline = Pipeline(self.go, self.DATA0)
 
     def test_repr(self):
-        repr(self.pipeline)
+        self.assertEquals(str(self.pipeline), 'Pipeline @ %s' % self.baseurl)
+
 
 if __name__ == '__main__':
     unittest.main()
