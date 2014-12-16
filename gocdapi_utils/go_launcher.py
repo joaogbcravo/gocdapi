@@ -235,10 +235,12 @@ class GoAgentLauncher(GoLauncher):
                 if line:
                     if "Couldn't access Go Server with base url" in line:
                         log.info("Agent running, however can't connect to the server")
-                    retries -= 1
-                    time.sleep(5)
-                    if retries == 0:
-                        raise Exception("Can't connect to the Go Server.")
+                        retries -= 1
+                        if retries == 0:
+                            self.stop()
+                            raise Exception("Can't connect to the Go Server.")
+                        time.sleep(5)
+
                 else:
                     log.warn('Stream %s has terminated', streamName)
 
