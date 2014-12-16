@@ -129,6 +129,6 @@ class Admin(GoBase):
         md5, xml_config_data = self._poll_configuration()
 
         config_xml = ConfigXML(xml_config_data)
-        config_xml.update_pipeline_from_xml_string(group_name, pipeline_xml_data)
+        config_xml.add_pipeline_from_xml_string_in_group(group_name, pipeline_xml_data)
 
         self.push_xml_configuration(md5, config_xml)

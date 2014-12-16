@@ -35,7 +35,6 @@ class Agent(GoBase):
         to get information about all the agents, and then update the actual object with the right information.
         """
         agents_data = self.get_json_data(self.build_url_with_base('go/api/agents'))
-        print agents_data, "<---"
         self._data = next(data for (index, data) in enumerate(agents_data) if data["uuid"] == self.uuid)
         self.__dict__.update(self._data)
 
@@ -98,6 +97,5 @@ class Agent(GoBase):
         Uses _data attribute populated by inherited methods, updating object attributes using the bunch pattern.
         Also sets the agent url.
         """
-        print self._data
         self.__dict__.update(self._data)
         self.set_self_url('go/api/agents/%s/' % self.uuid)
