@@ -17,3 +17,6 @@ include/
 lib/
 /build
 /dist
+go-server-*/
+go-agent-*/
+cover/

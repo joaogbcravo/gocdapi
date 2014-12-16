@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cruise xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cruise-config.xsd" schemaVersion="74">
+  <server artifactsdir="artifacts" commandRepositoryLocation="default" serverId="4f2a09d1-bfc1-4b67-acd9-a33cc80d02de" />
+  <pipelines group="Development">
+    <pipeline name="Web_Services" template="cenas">
+      <materials>
+        <git url="git@localhost:vagrant/services" autoUpdate="false" />
+      </materials>
+    </pipeline>
+  </pipelines>
+  <pipelines group="Deploy_stuff">
+    <pipeline name="Ansible_Deploy_Jenkins_Test">
+      <materials>
+        <git url="git://127.0.0.1/precommit.git" autoUpdate="false" />
+      </materials>
+      <stage name="run_ansible">
+        <environmentvariables>
+          <variable name="ANSIBLE_FORCE_COLOR">
+            <value>True</value>
+          </variable>
+          <variable name="PYTHONUNBUFFERED">
+            <value>1</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="run_ansible">
+            <tasks>
+              <exec command="python">
+                <arg>/home/go/go-commands/scripts/RunAnsibleDeploy.py</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="run_tests">
+        <environmentvariables>
+          <variable name="ANSIBLE_FORCE_COLOR">
+            <value>True</value>
+          </variable>
+          <variable name="PYTHONUNBUFFERED">
+            <value>True</value>
+          </variable>
+        </environmentvariables>
+        <jobs>
+          <job name="run_tests">
+            <tasks>
+              <exec command="python">
+                <arg>/home/go/go-commands/scripts/JenkinsTestRunner.py</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
+  <templates>
+    <pipeline name="cenas">
+      <stage name="Build">
+        <jobs>
+          <job name="Build">
+            <tasks>
+              <rake buildfile="Rakefile" target="build" />
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="Unit_Test">
+        <jobs>
+          <job name="Unit_Test">
+            <tasks>
+              <rake buildfile="Rakefile" target="unit_test" />
+            </tasks>
+            <artifacts>
+              <test src="tests/logfile.xml" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="Package">
+        <jobs>
+          <job name="Package">
+            <artifacts>
+              <artifact src="site" />
+              <artifact src="deploy" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </templates>
+  <agents>
+    <agent hostname="vagrant-ubuntu-trusty-32" ipaddress="10.0.2.15" uuid="a8b7c2b4-3986-476a-a797-abb3a065587e" />
+  </agents>
+</cruise>
