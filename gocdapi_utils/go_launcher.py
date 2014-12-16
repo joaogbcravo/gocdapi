@@ -73,9 +73,8 @@ class GoLauncher(object):
         self.folder_name = "go-%s-%s" % (self.runnable_type, self.version)
         self.full_directory = "%s/%s" % (self.working_directory, self.folder_name)
         self.http_port = 8153
-        self.q = Queue.Queue()
-        self.http_port = 8153 #random.randint(9000, 10000)
         self.https_port = self.http_port + 1
+        self.q = Queue.Queue()
 
     def update_runnable(self):
         """
@@ -195,7 +194,6 @@ class GoServerLauncher(GoLauncher):
         self.block_until_is_ready(timeout)
 
 
-
 class GoAgentLauncher(GoLauncher):
     """
     """
@@ -226,6 +224,7 @@ class GoAgentLauncher(GoLauncher):
         for t in threads:
             t.start()
 
+        retries = 3
         while True:
             try:
                 streamName, line = self.q.get(block=True, timeout=timeout)
@@ -236,7 +235,9 @@ class GoAgentLauncher(GoLauncher):
                 if line:
                     if "Couldn't access Go Server with base url" in line:
                         log.info("Agent running, however can't connect to the server")
-                        break
+                        retries -= 1
+                    if retries == 0:
+                        raise Exception("Can't connect to the Go Server.")
                 else:
                     log.warn('Stream %s has terminated', streamName)
 

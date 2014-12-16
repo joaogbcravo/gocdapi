@@ -10,3 +10,4 @@ install:
 script:
     - pep8 --ignore=E501 gocdapi/*.py
     - pylint --rcfile=pylintrc gocdapi/*.py
+    - nosetests -s

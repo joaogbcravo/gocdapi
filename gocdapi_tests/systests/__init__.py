@@ -1,6 +1,6 @@
 import os
-from gocdapi_utils.go_laucher import GoServerLauncher
-from gocdapi_utils.go_laucher import GoAgentLauncher
+from gocdapi_utils.go_launcher import GoServerLauncher
+from gocdapi_utils.go_launcher import GoAgentLauncher
 
 go_instances = {}
 
@@ -11,8 +11,6 @@ def setUpPackage():
     go_instances['agent'] = GoAgentLauncher(systests_dir, version)
     go_instances['server'].start()
     go_instances['agent'].start()
-
-
 
 def tearDownPackage():
     go_instances['agent'].stop()
