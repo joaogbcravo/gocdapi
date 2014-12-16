@@ -97,8 +97,10 @@ class TestConfigXML(unittest.TestCase):
 
 
     def test_remove_pipeline(self):
-        self.config_xml.remove_pipeline("Pipeline_3")
+        pipeline_group = self.config_xml.remove_pipeline("Pipeline_3")
         self.assertIsNone(self.config_xml.get_pipeline("Pipeline_3"))
+        self.assertIsNotNone(pipeline_group)
+        self.assertEqual(pipeline_group.get('group'), "Group_2")
         with self.assertRaises(GoCdApiException):
             self.config_xml.remove_pipeline("Pipeline_False")
 
@@ -144,6 +146,41 @@ class TestConfigXML(unittest.TestCase):
 
         with self.assertRaises(GoCdApiException):
             self.config_xml.create_pipeline_group("Group_3")
+
+    def test_add_pipeline_from_xml_string_in_group(self):
+        with self.assertRaises(GoCdApiException):
+            self.config_xml.add_pipeline_from_xml_string_in_group("Group_False", self.DATA1)
+
+        pipeline_element_to_add = ET.fromstring(self.DATA1)
+        self.config_xml.add_pipeline_from_xml_string_in_group("Group_1", self.DATA1)
+
+        pipeline_group = self.config_xml.get_pipeline_parent_group("SuperPipeline")
+        pipeline_element = self.config_xml.get_pipeline("SuperPipeline")
+        self.assertIsNotNone(pipeline_group)
+        self.assertIsNotNone(pipeline_element)
+        self.assertEqual(pipeline_element.get("name"), "SuperPipeline")
+        self.assertEqual(pipeline_group.get("group"), "Group_1")
+
+        with self.assertRaises(GoCdApiException):
+            self.config_xml.add_pipeline_from_xml_string_in_group("Group_1", self.DATA2)
+
+    def test_update_pipeline_from_xml_string(self):
+        pipeline_name = "Pipeline_4"
+        pipeline_group_old = self.config_xml.get_pipeline_parent_group(pipeline_name)
+        pipeline_element_old = self.config_xml.get_pipeline(pipeline_name)
+
+        self.config_xml.update_pipeline_from_xml_string(self.DATA2)
+
+        pipeline_group_new = self.config_xml.get_pipeline_parent_group(pipeline_name)
+        pipeline_element_new = self.config_xml.get_pipeline(pipeline_name)
+
+        self.assertEqual(pipeline_element_old.get("name"), pipeline_element_new.get("name"))
+        self.assertEqual(pipeline_group_old.get("group"), pipeline_group_new.get("group"))
+        self.assertIsNotNone(pipeline_element_new.get("arg"))
+        self.assertEqual(pipeline_element_new.get("arg"), "newarg")
+
+        with self.assertRaises(GoCdApiException):
+            self.config_xml.update_pipeline_from_xml_string(self.DATA1)
 
     def test_str(self):
         str(self.config_xml)
