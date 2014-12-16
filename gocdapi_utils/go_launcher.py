@@ -224,7 +224,7 @@ class GoAgentLauncher(GoLauncher):
         for t in threads:
             t.start()
 
-        retries = 3
+        retries = 5
         while True:
             try:
                 streamName, line = self.q.get(block=True, timeout=timeout)
@@ -235,7 +235,8 @@ class GoAgentLauncher(GoLauncher):
                 if line:
                     if "Couldn't access Go Server with base url" in line:
                         log.info("Agent running, however can't connect to the server")
-                        retries -= 1
+                    retries -= 1
+                    time.sleep(5)
                     if retries == 0:
                         raise Exception("Can't connect to the Go Server.")
                 else:
