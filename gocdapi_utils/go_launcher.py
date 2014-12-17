@@ -12,6 +12,7 @@ import pkg_resources
 from gocdapi.go import Go
 from gocdapi.custom_exceptions import GoCdApiException
 
+logging.basicConfig()
 log = logging.getLogger(__name__)
 
 import sys
@@ -39,7 +40,7 @@ class StreamThread(threading.Thread):
         self.fn_log = fn_log
 
     def run(self):
-        log.info("Starting %s", self.name)
+        log.warning("INFO: Starting %s", self.name)
 
         while True:
             line = self.stream.readline()
@@ -52,7 +53,7 @@ class StreamThread(threading.Thread):
 
 
 def download_zip(url, destiny_zip_file):
-    log.info("Downloading zip from %s" % url)
+    log.warning("INFO: Downloading zip from %s" % url)
 
 
 def run_command(command, env_variables=None):
@@ -79,13 +80,13 @@ class GoLauncher(object):
     def update_runnable(self):
         """
         """
-        log.info("Checking if %s exists..." % self.full_directory)
+        log.warning("INFO: Checking if %s exists..." % self.full_directory)
         os.chdir(self.working_directory)
         if os.path.exists(self.folder_name):
-            log.info("We already have the go %s locally..." % self.runnable_type)
+            log.warning("INFO: We already have the go %s locally..." % self.runnable_type)
         else:
             try:
-                log.info("Redownloading Go %s..." % self.runnable_type)
+                log.warning("INFO: Redownloading Go %s..." % self.runnable_type)
                 zip_file = "%s.zip" % self.folder_name
                 url = "http://download.go.cd/gocd/%s" % zip_file
                 urllib.urlretrieve(url, filename=zip_file, reporthook=dlProgress)
@@ -94,7 +95,7 @@ class GoLauncher(object):
                 raise Exception("Failed to download %s - %s " % (url, e))
 
             try:
-                log.info("Unzipping %s..." % zip_file)
+                log.warning("INFO: Unzipping %s..." % zip_file)
                 zip_ref = zipfile.ZipFile(zip_file, 'r')
                 zip_ref.extractall(".")
                 zip_ref.close()
@@ -104,7 +105,7 @@ class GoLauncher(object):
 
             try:
                 target_zip_folder = "go-%s-%s" % (self.runnable_type, self.version.split('-')[0])
-                log.info("Rename extracted folder from %s to %s..." % (zip_file, target_zip_folder))
+                log.warning("INFO: Rename extracted folder from %s to %s..." % (target_zip_folder, self.folder_name))
                 os.rename(target_zip_folder, self.folder_name)
             except Exception as e:
                 raise Exception("Failed to unzip %s - %s " % (zip_file, e))
@@ -114,18 +115,19 @@ class GoLauncher(object):
         """
         """
         os.chdir(self.full_directory)
-        log.info("Shutting down Go %s..." % self.runnable_type)
-        self.go_server_process = run_command(["sh", "stop-%s.sh" % self.runnable_type])
+        log.warning("INFO: Shutting down Go %s..." % self.runnable_type)
+        gocd_command = "/bin/bash stop-%s.sh" % self.runnable_type
+        run_command(gocd_command.split())
 
     def _start(self, env_variables):
         """
         """
         self.update_runnable()
 
-        log.info("About to start Go %s..." % self.runnable_type)
+        log.warning("INFO: About to start Go %s..." % self.runnable_type)
         os.chdir(self.full_directory)
 
-        gocd_command = "sh %s.sh" % self.runnable_type
+        gocd_command = "/bin/bash %s.sh" % self.runnable_type
         return run_command(gocd_command.split(), env_variables)
 
 
@@ -148,10 +150,10 @@ class GoServerLauncher(GoLauncher):
         while True:
             try:
                 Go('http://localhost:%s' % str(self.http_port))
-                log.info('Go Server is finally ready for use.')
+                log.warning("INFO: Go Server is finally ready for use.")
                 return
             except GoCdApiException:
-                log.info('Go Server is not yet ready...')
+                log.warning("INFO: Go Server is not yet ready...")
             if datetime.datetime.now() > timeout_time:
                 raise TimeOut('Took too long for Go Server to become ready...')
             time.sleep(5)
@@ -186,7 +188,7 @@ class GoServerLauncher(GoLauncher):
             else:
                 if line:
                     if 'Creating cache named messageBundles' in line:
-                        log.info(line)
+                        log.warning("INFO %s " % line)
                         break
                 else:
                     log.warn('Stream %s has terminated', streamName)
@@ -204,6 +206,23 @@ class GoAgentLauncher(GoLauncher):
         GoLauncher.__init__(self, "agent", working_directory, version)
         self.http_port = 8153
         self.q = Queue.Queue()
+
+    def block_until_is_ready(self, timeout):
+        start_time = datetime.datetime.now()
+        timeout_time = start_time + datetime.timedelta(seconds=timeout)
+
+        go_server = Go('http://localhost:%s' % str(self.http_port))
+
+        while True:
+            try:
+                if go_server.agents:
+                    log.warning("INFO: Go Server have already an agent.")
+                    return
+            except GoCdApiException:
+                log.warning("INFO: Go Agent is not yet ready...")
+            if datetime.datetime.now() > timeout_time:
+                raise TimeOut('Took too long for Go Agent to become ready...')
+            time.sleep(5)
 
     def start(self, timeout=60):
         """
@@ -234,7 +253,8 @@ class GoAgentLauncher(GoLauncher):
             else:
                 if line:
                     if "Couldn't access Go Server with base url" in line:
-                        log.info("Agent running, however can't connect to the server")
+                        log.warning("INFO: Agent running, however can't connect to the server")
+                        log.warning("INFO: Retry %s out of 5." % (6 - retries))
                         retries -= 1
                         if retries == 0:
                             self.stop()
@@ -242,7 +262,9 @@ class GoAgentLauncher(GoLauncher):
                         time.sleep(5)
 
                 else:
-                    log.warn('Stream %s has terminated', streamName)
+                    log.warn('WARNING: Stream %s has terminated', streamName)
+
+        self.block_until_is_ready(timeout)
 
 
 if __name__ == '__main__':
@@ -252,20 +274,20 @@ if __name__ == '__main__':
     current_path = os.getcwd()
     version = "14.3.0-1186"
 
-    log.info("Starting Go Server...!")
+    log.warning("INFO: Starting Go Server...!")
 
     go_server_laucher = GoServerLauncher(current_path, version)
     go_server_laucher.start()
-    log.info("Go Server was launched...")
+    log.warning("INFO: Go Server was launched...")
 
     go_agent_laucher = GoAgentLauncher(current_path, version)
     go_agent_laucher.start()
-    log.info("Go Agent was launched...")
+    log.warning("INFO: Go Agent was launched...")
 
-    log.info("Waiting 30 seconds before shut it down...")
+    log.warning("INFO: Waiting 30 seconds before shut it down...")
     time.sleep(30)
 
-    log.info("...now to shut it down!")
+    log.warning("INFO: ...now to shut it down!")
     go_agent_laucher.stop()
     go_server_laucher.stop()
 
