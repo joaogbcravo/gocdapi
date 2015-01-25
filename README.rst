@@ -57,7 +57,8 @@ While there isn't a stable release hosted in PyPi, you can clone the repository 
 
 Example
 -------
-gocdAPI is intended to map the objects in Go (e.g. Pipeline Groups, Pipelines, Agents) into easily managed Python objects:
+gocdAPI is intended to map the objects in Go (e.g. Pipeline Groups, Pipelines, Agents) into easily managed Python
+objects:
 
 .. code-block:: python
 
@@ -99,7 +100,23 @@ After the installation of the test dependencies on your system, run the command:
 
 .. code-block:: bash
 
-        python setup.py test
+        python setup.py nosetests
+
+Nose need a Go Server and Agent to run, so when you execute nosetests it will start a new Go Server and Agent, and it
+will shutdown them after all the test run. If you haven't the executable in the gocdapi_tests/systests folder it will
+download them. This process can be slow, so you can start by yourself a Go Server and Agent and run nosetests in the
+following way:
+
+.. code-block:: bash
+
+        python nosetests -s --nologcapture --tc=static_instances:true
+
+To make a source code analysis, you can run pep8 and pylint:
+
+.. code-block:: bash
+
+        pep8 --ignore=E501 gocdapi/*.py
+        pylint --rcfile=pylintrc gocdapi/*.py
 
 
 Project Contributors
@@ -116,8 +133,15 @@ License
 The MIT License (MIT)
 =====================
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+persons to whom the Software is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
