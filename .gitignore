@@ -20,3 +20,4 @@ lib/
 go-server-*/
 go-agent-*/
 cover/
+*.log
