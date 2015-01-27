@@ -2,7 +2,6 @@
 import unittest
 import logging
 import time
-#import gocdapi_tests.systests
 
 from gocdapi_tests.systests.pipeline_configs import EMPTY_PIPELINE
 from gocdapi.go import Go
@@ -22,6 +21,7 @@ class BaseSystemTest(unittest.TestCase):
         self.go = Go('%s:%d' % (DEFAULT_GO_URL, DEFAULT_GO_PORT))
         self._delete_test_pipelines_group(self.pipeline_group_name())
         self._create_test_pipelines_group(self.pipeline_group_name())
+        self.go.admin.create_pipeline_from_xml(self.pipeline_group_name(), EMPTY_PIPELINE % "pipe_for_tests")
 
     def tearDown(self):
         self._delete_test_pipelines_group(self.pipeline_group_name())
@@ -33,9 +33,6 @@ class BaseSystemTest(unittest.TestCase):
     def _create_test_pipelines_group(self, name):
         if name not in self.go.pipeline_groups:
             pipeline_group = self.go.admin.create_pipeline_group(name)
-
-    def _create_pipeline(self, name='DUMMY', config=EMPTY_PIPELINE):
-        pipeline = self.go.create_pipeline(name, config)
 
     def assert_pipeline_is_present(self, name):
         self.assertTrue(self.go.pipeline_exist(name), 'Pipeline %r is absent in Go.' % name)

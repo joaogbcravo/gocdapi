@@ -7,21 +7,32 @@ from gocdapi_tests.systests.base import BaseSystemTest
 from gocdapi_tests.systests.pipeline_configs import EMPTY_PIPELINE
 from gocdapi_tests.test_utils.random_strings import random_string
 
+from gocdapi.custom_exceptions import GoCdApiException
 
 class TestPipelines(BaseSystemTest):
 
-    def test_create_pipeline(self):
-        pipeline_name = 'test_pipeline_%s' % random_string()
-        self.go.admin.create_pipeline_from_xml(self.pipeline_group_name(), EMPTY_PIPELINE % pipeline_name)
-        self.assert_pipeline_is_present(pipeline_name)
+    def test_pipeline_pause_unpause_and_is_paused(self):
+        self.pipeline = self.go.pipelines.values()[0]
 
-    def test_create_delete_pipeline_group(self):
-        pipeline_group = 'test_pipeline_group_%s' % random_string()
-        self.go.admin.create_pipeline_group(pipeline_group)
-        self.assertTrue(pipeline_group in self.go.pipeline_groups)
+        self.pipeline.pause("Test purposes")
+        self.assertTrue(self.pipeline.is_paused())
 
-        self.go.admin.delete_pipeline_group(pipeline_group)
-        self.assertFalse(pipeline_group in self.go.pipeline_groups)
+        self.pipeline.unpause()
+        self.assertFalse(self.pipeline.is_paused())
+
+    def test_pipeline_is_schedulable(self):
+        self.pipeline = self.go.pipelines.values()[0]
+
+        self.pipeline.pause("Test purposes")
+        self.assertFalse(self.pipeline.is_schedulable())
+
+        self.pipeline.unpause()
+        self.assertTrue(self.pipeline.is_schedulable())
+
+    def test_pipeline_is_locked(self):
+        self.pipeline = self.go.pipelines.values()[0]
+        self.pipeline.unpause()
+        self.assertFalse(self.pipeline.is_locked())
 
 if __name__ == '__main__':
     unittest.main()
