@@ -1,10 +1,5 @@
-"""
-TODO
-"""
-
 from gocdapi import __version__ as version
 import sys
-
 
 def main():
     sys.stdout.write(version)
