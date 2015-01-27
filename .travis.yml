@@ -4,7 +4,7 @@ python:
     - "2.7"
 
 install:
-    - pip install pep8 pylint nose coverage
+    - pip install pep8 pylint nose coverage nose-testconfig
     - python setup.py develop
 
 script:
