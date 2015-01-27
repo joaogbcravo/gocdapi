@@ -16,10 +16,14 @@ This project was inspirated in the jenkinsapi library - https://github.com/salim
 
 This library can help you:
 
-* Ability to list Go Agents
-* Ability to enable/disable/delete a Go Agent
-* Ability to list Go Pipelines Groups and their pipelines
-* Ability to schedule/release lock/pause/unpause a Go Pipeline
+* to list Go Agents
+* to enable/disable/delete a Go Agent
+* to see a job run history of an Go Agent
+* to list Go Pipelines Groups and their Pipelines
+* to schedule/release lock/pause/unpause a Go Pipeline
+* to create and delete Go Pipelines from a XML config or delete Go Pipelines
+* to create and delete Go Pipelines Groups
+* to cancel a Go Stage run or see it's history
 
 
 Python versions
