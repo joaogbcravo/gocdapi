@@ -56,16 +56,24 @@ class Go(object):
         Returns:
             bool: True if pipeline with the given name exists
         """
-        for pipeline_group in self.pipeline_groups.values():
-            if any(name == pipe_name for pipe_name in pipeline_group):
-                return True
-        return False
+        return name in self.pipelines
+
+    def get_pipeline(self, name):
+        """ Return pipeline if exists.
+
+        Args:
+            name (str): name of the pipeline to get
+
+        Returns:
+            pipeline: Pipeline with the given name or None if it doesn't exist.
+        """
+        return self.pipelines.get(name, None)
 
     def _iter_through_pipelines(self):
-        """ Return a iterable containing every pipeline
+        """ Return a iterable containing every pair pipeline_name, pipeline
 
-        Generator: Yields a pipeline
+        Generator: Yields a pair pipeline_name, pipeline
         """
         for pipeline_group in self.pipeline_groups.values():
-            for pipeline in pipeline_group:
-                yield pipeline
+            for pipeline_name, pipeline in pipeline_group.iteritems():
+                yield pipeline_name, pipeline

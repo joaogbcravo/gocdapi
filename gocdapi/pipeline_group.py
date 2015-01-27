@@ -30,6 +30,16 @@ class PipelineGroup(GoBase):
         """
         return self._pipelines.__iter__()
 
+    def iteritems(self):
+        """Iter over pipelines from this pipeline group
+
+        Forwards this method to the _pipelines attribute method with the same name.
+
+        Return:
+            iterable: pipelines
+        """
+        return self._pipelines.iteritems()
+
     def __len__(self):
         """Get the number of pipelines that this pipeline group have
 
