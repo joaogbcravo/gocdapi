@@ -30,7 +30,7 @@ class GoBase(object):
 
         if poll and self.url:
             self._data = self.get_data()
-        elif data:
+        elif data is not None:
             self._data = data
         self._poll()
 
@@ -184,7 +184,7 @@ class GoBase(object):
             raise GoCdApiException("[%i] - %s" % (response.status_code, response.text))
 
     def _poll(self):
-        """TODO documentation
+        """ To be overrided. Goal: poll new data to fill the object attributes.
 
         Should be override by the class that inherits from this one.
 

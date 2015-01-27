@@ -6,7 +6,7 @@ from gocdapi.custom_exceptions import GoCdApiException
 import xml.etree.ElementTree as ET
 
 class ConfigXML(ET.ElementTree):
-    """TODO
+    """ Helper class to handle pipelines (add, remove, update) from the Go Server configuration file.
     """
     def __init__(self, xml_config_data):
         """ Inits the ConfigXML object
