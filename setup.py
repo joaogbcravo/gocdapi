@@ -2,7 +2,7 @@ from setuptools import setup
 import os
 
 PROJECT_ROOT, _ = os.path.split(__file__)
-REVISION = '0.1.0'
+REVISION = '1.0.0'
 PROJECT_NAME = 'gocdapi'
 PROJECT_AUTHORS = "Joao Cravo"
 # Please see readme.rst for a complete list of contributors
@@ -36,7 +36,7 @@ setup(
     long_description=DESCRIPTION,
     license='MIT',
     classifiers=[
-        'Development Status :: 1 - Planning',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
         'Environment :: Plugins',
         'Intended Audience :: Developers',

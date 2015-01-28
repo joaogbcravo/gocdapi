@@ -1,6 +1,9 @@
 gocdapi
 ==========
 
+.. image:: https://badge.fury.io/py/gocdapi.png
+    :target: http://badge.fury.io/py/gocdapi
+
 .. image:: https://travis-ci.org/joaogbcravo/gocdapi.png?branch=master
         :target: https://travis-ci.org/joaogbcravo/gocdapi
 
@@ -35,7 +38,8 @@ The project have been tested and working on 2.7
 Known bugs
 ----------
 
-No stable release yet. A lot of stuff to do.
+Currently compatible with Go version 14.3.0-1186.
+No know bugs at the moment.
 
 
 Important Links
