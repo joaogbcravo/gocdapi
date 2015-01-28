@@ -53,13 +53,24 @@ Project source code: github: https://github.com/joaogbcravo/gocdapi
 Installation
 -------------
 
-Instaling from the source
-^^^^^^^^^^^^^^^^^^^^^^^^^
+Using Pip
+^^^^^^^^^
 
-While there isn't a stable release hosted in PyPi, you can clone the repository and run:
+Run the command:
 
 .. code-block:: bash
 
+    pip install jenkinsapi
+
+
+Instaling from the source
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+You can clone the repository and install:
+
+.. code-block:: bash
+
+    git clone https://github.com/joaogbcravo/gocdapi.git
     python setup.py install
 
 
