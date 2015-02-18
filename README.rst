@@ -60,7 +60,7 @@ Run the command:
 
 .. code-block:: bash
 
-    pip install jenkinsapi
+    pip install gocdapi
 
 
 Instaling from the source
