@@ -32,6 +32,9 @@ Current code lives on github: https://github.com/joaogbcravo/gocdapi
 """
 import pkg_resources
 from gocdapi import (
+    # Modules
+    command_line,
+    utils,
 
     # Files
     admin,
@@ -47,6 +50,9 @@ from gocdapi import (
 )
 
 __all__ = [
+    "command_line",
+    "utils",
+
     "admin",
     "agent",
     "agents",

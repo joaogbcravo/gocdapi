@@ -2,7 +2,7 @@ from setuptools import setup
 import os
 
 PROJECT_ROOT, _ = os.path.split(__file__)
-REVISION = '1.0.0'
+REVISION = '1.0.3'
 PROJECT_NAME = 'gocdapi'
 PROJECT_AUTHORS = "Joao Cravo"
 # Please see readme.rst for a complete list of contributors
@@ -25,7 +25,11 @@ setup(
     version=REVISION,
     author=PROJECT_AUTHORS,
     author_email=PROJECT_EMAILS,
-    packages=['gocdapi'],
+    packages=[
+        'gocdapi',
+        'gocdapi.command_line',
+        'gocdapi.utils',
+    ],
     zip_safe=True,
     include_package_data=False,
     install_requires=['requests>=2.3.0'],
