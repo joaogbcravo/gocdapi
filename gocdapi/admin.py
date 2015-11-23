@@ -102,6 +102,21 @@ class Admin(GoBase):
 
         self.push_xml_configuration(md5, config_xml)
 
+    def delete_pipeline(self, pipeline):
+        """ Deletes a pipeline in the Go Server
+
+        Will do a POST request to go/api/admin/config.xml
+
+        Args:
+            pipeline (str): name of the pipeline to be deleted
+        """
+        md5, xml_config_data = self.poll_configuration()
+
+        config_xml = ConfigXML(xml_config_data)
+        config_xml.remove_pipeline(pipeline)
+
+        self.push_xml_configuration(md5, config_xml)
+
     def update_pipeline_from_xml(self, pipeline_xml_data):
         """ Updates a pipeline in the Go Server
 
