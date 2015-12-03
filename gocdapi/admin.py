@@ -45,7 +45,7 @@ class Admin(GoBase):
         """
         pass
 
-    def _poll_configuration(self):
+    def poll_configuration(self):
         """ Polls Go configuration
 
         Will do a GET request to go/api/admin/config.xml
@@ -80,7 +80,7 @@ class Admin(GoBase):
         Args:
             group_name(str): name of the group to be created
         """
-        md5, xml_config_data = self._poll_configuration()
+        md5, xml_config_data = self.poll_configuration()
 
         config_xml = ConfigXML(xml_config_data)
         config_xml.create_pipeline_group(group_name)
@@ -95,7 +95,7 @@ class Admin(GoBase):
         Args:
             group_name(str): name of the group to be deleted
         """
-        md5, xml_config_data = self._poll_configuration()
+        md5, xml_config_data = self.poll_configuration()
 
         config_xml = ConfigXML(xml_config_data)
         config_xml.remove_pipeline_group(group_name)
@@ -110,7 +110,7 @@ class Admin(GoBase):
         Args:
             pipeline_xml_data(str): xml data of pipeline to be updated
         """
-        md5, xml_config_data = self._poll_configuration()
+        md5, xml_config_data = self.poll_configuration()
 
         config_xml = ConfigXML(xml_config_data)
         config_xml.update_pipeline_from_xml_string(pipeline_xml_data)
@@ -126,7 +126,7 @@ class Admin(GoBase):
             group_name(str): name of pipeline group which pipeline should belong
             pipeline_xml_data(str): xml data of pipeline to be updated
         """
-        md5, xml_config_data = self._poll_configuration()
+        md5, xml_config_data = self.poll_configuration()
 
         config_xml = ConfigXML(xml_config_data)
         config_xml.add_pipeline_from_xml_string_in_group(group_name, pipeline_xml_data)
