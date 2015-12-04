@@ -2,8 +2,11 @@
 Module for gocdapi Pipeline class
 """
 
+import xml.etree.ElementTree as ET
+
 from gocdapi.gobase import GoBase
 from gocdapi.stage import Stage
+from gocdapi.utils.config_xml import ConfigXML
 
 
 class Pipeline(GoBase):
@@ -118,6 +121,23 @@ class Pipeline(GoBase):
         """
         url = self.build_url('history/%s' % offset)
         return self.get_json_data(url)
+
+    def get_config_xml(self, to_string=False):
+        """Get Configuration XML.
+
+        Will do a GET request to go/api/admin/config/current.xml to retrieve the current pipeline
+        configuration.
+
+        Args:
+            to_string (bool): Stringify the config XML before returning it
+
+        Returns:
+            str: XML string data
+        """
+        _, config_xml_data = self.go_server.admin.poll_configuration()
+        config_xml = ConfigXML(config_xml_data)
+        pipeline_xml = config_xml.get_pipeline(self.name)
+        return ET.tostring(pipeline_xml) if to_string else pipeline_xml
 
     def _poll(self):
         """Will create and define the attributes of the pipeline.
