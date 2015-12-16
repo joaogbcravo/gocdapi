@@ -2,7 +2,7 @@ from setuptools import setup
 import os
 
 PROJECT_ROOT, _ = os.path.split(__file__)
-REVISION = '1.0.3'
+REVISION = '1.0.4'
 PROJECT_NAME = 'gocdapi'
 PROJECT_AUTHORS = "Joao Cravo"
 # Please see readme.rst for a complete list of contributors
