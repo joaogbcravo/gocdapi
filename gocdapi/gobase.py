@@ -6,7 +6,7 @@ import logging
 from json import loads as jsonloads
 from urlparse import urljoin
 
-from requests import get, post
+import requests
 from gocdapi.custom_exceptions import GoCdApiException
 
 
@@ -135,34 +135,66 @@ class GoBase(object):
         return GoBase.get_full_response(url, params).text
 
     @staticmethod
-    def get_full_response(url, params=None):
+    def get_full_response(url, params=None, headers=None):
         """Do a GET request
 
         Args:
-            url (str): url to get the json data
-            params (dict): params to be passed through the GET request
-
-        Returns:
-            requests.Response: response from the get request
-        """
-        response = get(url, params=params)
-        return GoBase.do_handle_response(response)
-
-    @staticmethod
-    def do_post(url, params=None, data=None, headers={}):
-        """Do a POST request
-
-        Args:
-            url (str): url to get the json data
-            params (dict): params to be passed through the POST request
-            data (dict): data to be passed through the POST request
+            url (str): url to GET
+            params (dict): params to be sent in request
             headers (dict): extra headers to be sent in request
 
         Returns:
             requests.Response: response from the get request
         """
-        response = post(url, params=params, data=data, headers=headers)
+        response = requests.get(url, params=params, headers=headers)
+        return GoBase.do_handle_response(response)
+
+    @staticmethod
+    def do_post(url, params=None, data=None, headers=None):
+        """Do a POST request
+
+        Args:
+            url (str): url to be POSTed
+            params (dict): params to be sent in request
+            data (dict): data to be sent in request
+            headers (dict): extra headers to be sent in request
+
+        Returns:
+            requests.Response: response from the get request
+        """
+        response = requests.post(url, params=params, data=data, headers=headers)
         return GoBase.do_handle_response(response).text
+
+    @staticmethod
+    def do_patch(url, params=None, data=None, headers=None):
+        """Do a PATCH request
+
+        Args:
+            url (str): resource to update
+            params (dict): params to be sent in request
+            data (dict): data to be sent in request
+            headers (dict): extra headers to be sent in request
+
+        Returns:
+            requests.Response: response from the get request
+        """
+        response = requests.patch(url, params=params, data=data, headers=headers)
+        return GoBase.do_handle_response(response).json
+
+    @staticmethod
+    def do_delete(url, params=None, headers=None):
+        """Do a DELETE request
+
+        Args:
+            url (str): resource to DELETE
+            params (dict): params to be sent in request
+            headers (dict): extra headers to be sent in request
+
+        Returns:
+            requests.Response: response from the get request
+        """
+        response = requests.patch(url, params=params, headers=headers)
+        return GoBase.do_handle_response(response).json
 
     @staticmethod
     def do_handle_response(response):
