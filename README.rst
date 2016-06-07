@@ -38,7 +38,7 @@ The project have been tested and working on 2.7
 Known bugs
 ----------
 
-Currently compatible with Go version 14.3.0-1186.
+Currently tested against Go version 16.5.0-3305.
 No know bugs at the moment.
 
 

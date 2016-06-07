@@ -8,7 +8,7 @@ static_instances = config.get('static_instances', False)
 
 def setUpPackage():
     if not static_instances:
-        version = "14.4.0-1356"
+        version = "16.5.0-3305"
         systests_dir, _ = os.path.split(__file__)
         go_instances['server'] = GoServerLauncher(systests_dir, version)
         go_instances['agent'] = GoAgentLauncher(systests_dir, version)

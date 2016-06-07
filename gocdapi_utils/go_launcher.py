@@ -88,7 +88,7 @@ class GoLauncher(object):
             try:
                 log.warning("INFO: Redownloading Go %s..." % self.runnable_type)
                 zip_file = "%s.zip" % self.folder_name
-                url = "http://download.go.cd/gocd/%s" % zip_file
+                url = "https://download.go.cd/binaries/%s/generic/%s" % (self.version, zip_file)
                 urllib.urlretrieve(url, filename=zip_file, reporthook=dlProgress)
                 sys.stdout.write("\r100%\n")
             except Exception as e:
