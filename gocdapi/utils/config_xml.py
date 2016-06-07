@@ -1,9 +1,10 @@
 """
 Module for gocdapi ConfigXML Util class
 """
+import xml.etree.ElementTree as ET
+
 from gocdapi.custom_exceptions import GoCdApiException
 
-import xml.etree.ElementTree as ET
 
 class ConfigXML(ET.ElementTree):
     """ Helper class to handle pipelines (add, remove, update) from the Go Server configuration file.

@@ -8,6 +8,6 @@ install:
     - python setup.py develop
 
 script:
-    - pep8 --ignore=E501 gocdapi/*.py
-    - pylint --rcfile=pylintrc gocdapi/*.py
+    - find gocdapi -name "*.py" | xargs pep8 --config=.pep8rc
+    - find gocdapi -name "*.py" | xargs pylint --rcfile=.pylintrc
     - nosetests -s --nologcapture
