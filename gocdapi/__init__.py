@@ -26,6 +26,7 @@ Project Authors
 ===============
 
  * Joao Cravo (joaogbcravo@gmail.com)
+ * Joao Vale (jpvale@gmail.com)
 
 Current code lives on github: https://github.com/joaogbcravo/gocdapi
 

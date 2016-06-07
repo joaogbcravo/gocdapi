@@ -142,6 +142,7 @@ Project Contributors
 --------------------
 
 * Joao Cravo (joaogbcravo@gmail.com)
+* Joao Vale (jpvale@gmail.com)
 
 Please do not contact these contributors directly for support questions! Use the GitHub tracker instead.
 
