@@ -149,18 +149,19 @@ class GoBase(object):
         return GoBase.do_handle_response(response)
 
     @staticmethod
-    def do_post(url, params=None, data=None):
+    def do_post(url, params=None, data=None, headers={}):
         """Do a POST request
 
         Args:
             url (str): url to get the json data
             params (dict): params to be passed through the POST request
             data (dict): data to be passed through the POST request
+            headers (dict): extra headers to be sent in request
 
         Returns:
             requests.Response: response from the get request
         """
-        response = post(url, params=params, data=data)
+        response = post(url, params=params, data=data, headers=headers)
         return GoBase.do_handle_response(response).text
 
     @staticmethod
