@@ -35,10 +35,16 @@ Python versions
 The project have been tested and working on 2.7
 
 
+GoCD versions
+-------------
+
+Current HEAD is tested against GoCD 16.5.0-3305
+Versions until 1.0.3 were tested against GoCD 14.3.0-1186
+
+
 Known bugs
 ----------
 
-Currently tested against Go version 16.5.0-3305.
 No know bugs at the moment.
 
 
