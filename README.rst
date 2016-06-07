@@ -12,27 +12,27 @@ About this library
 
 Go is a continuous delivery system - http://www.go.cd/
 
-The goal of this python library is to be an easy interface for the Go server.
+The goal of this Python library is to be an easy interface for the Go server.
 
-This project was inspirated in the jenkinsapi library - https://github.com/salimfadhley/jenkinsapi
+This project was inspirated by the jenkinsapi library - https://github.com/salimfadhley/jenkinsapi
 
 
 This library can help you:
 
-* to list Go Agents
-* to enable/disable/delete a Go Agent
-* to see a job run history of an Go Agent
-* to list Go Pipelines Groups and their Pipelines
-* to schedule/release lock/pause/unpause a Go Pipeline
-* to create and delete Go Pipelines from a XML config or delete Go Pipelines
-* to create and delete Go Pipelines Groups
-* to cancel a Go Stage run or see it's history
+* list Go Agents
+* enable/disable/delete a Go Agent
+* see the job run history of an Go Agent
+* list Go Pipelines Groups and their Pipelines
+* schedule/release lock/pause/unpause a Go Pipeline
+* create Go Pipelines from a XML config or delete Go Pipelines
+* create and delete Go Pipelines Groups
+* cancel a Go Pipeline Stage run or see its history
 
 
 Python versions
 ---------------
 
-The project have been tested and working on 2.7
+The project has been tested and working on Python 2.7
 
 
 GoCD versions
@@ -140,8 +140,8 @@ To make a source code analysis, you can run pep8 and pylint:
 
 .. code-block:: bash
 
-        pep8 --ignore=E501 gocdapi/*.py
-        pylint --rcfile=pylintrc gocdapi/*.py
+        pep8 gocdapi/*.py --config=.pep8rc
+        pylint --rcfile=.pylintrc gocdapi/*.py
 
 
 Project Contributors
