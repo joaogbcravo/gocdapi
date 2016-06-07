@@ -7,8 +7,8 @@ from gocdapi_tests.systests.base import BaseSystemTest
 from gocdapi_tests.systests.pipeline_configs import EMPTY_PIPELINE, UPDATED_PIPELINE
 from gocdapi_tests.test_utils.random_strings import random_string
 
-class TestAdmin(BaseSystemTest):
 
+class TestAdmin(BaseSystemTest):
     def test_create_delete_pipeline(self):
         pipeline_name = 'test_pipeline_%s' % random_string()
         self.go.admin.create_pipeline_from_xml(self.pipeline_group_name(), EMPTY_PIPELINE % pipeline_name)
@@ -29,6 +29,7 @@ class TestAdmin(BaseSystemTest):
 
         self.go.admin.update_pipeline_from_xml(UPDATED_PIPELINE % pipeline_name)
         self.assertEqual(self.go.get_pipeline(pipeline_name).stages[0].name, 'super_stage')
+
 
 if __name__ == '__main__':
     unittest.main()

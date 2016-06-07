@@ -1,18 +1,16 @@
-import mock
-
 import unittest
-
-from gocdapi.admin import ConfigXML
-
-from gocdapi.custom_exceptions import GoCdApiException
 import xml.etree.ElementTree as ET
 
-class TestConfigXML(unittest.TestCase):
+from gocdapi.admin import ConfigXML
+from gocdapi.custom_exceptions import GoCdApiException
 
+
+class TestConfigXML(unittest.TestCase):
     DATA0 = """
 
         <cruise >
-          <server artifactsdir="artifacts" commandRepositoryLocation="default" serverId="4f2a09d1-bfc1-4b67-acd9-a33cc80d02de" />
+          <server artifactsdir="artifacts" commandRepositoryLocation="default"
+            serverId="4f2a09d1-bfc1-4b67-acd9-a33cc80d02de" />
           <pipelines group="Group_1">
             <pipeline name="Pipeline_1">
             </pipeline>
@@ -75,7 +73,6 @@ class TestConfigXML(unittest.TestCase):
 
         self.assertIsNone(self.config_xml.get_pipeline_parent_group("False_Pipeline"))
 
-
     def test_add_pipeline_element_in_group(self):
         pipeline_element_to_add = ET.fromstring(self.DATA1)
         with self.assertRaises(GoCdApiException):
@@ -94,7 +91,6 @@ class TestConfigXML(unittest.TestCase):
         pipeline_element_to_add = ET.fromstring(self.DATA2)
         with self.assertRaises(GoCdApiException):
             self.config_xml.add_pipeline_element_in_group("Group_1", pipeline_element_to_add)
-
 
     def test_remove_pipeline(self):
         pipeline_group = self.config_xml.remove_pipeline("Pipeline_3")
@@ -184,6 +180,7 @@ class TestConfigXML(unittest.TestCase):
 
     def test_str(self):
         str(self.config_xml)
+
 
 if __name__ == '__main__':
     unittest.main()

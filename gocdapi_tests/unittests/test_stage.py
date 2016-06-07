@@ -1,32 +1,28 @@
-import mock
-
 import unittest
 
 from gocdapi.go import Go
-from gocdapi.stage import Stage
 from gocdapi.pipeline import Pipeline
+from gocdapi.stage import Stage
 
-from gocdapi.custom_exceptions import GoCdApiException
 
 class TestStage(unittest.TestCase):
-
     DATA0 = {
-      "stages":[
-        {
-           "name":"Deploy"
-        },
-        {
-           "name":"tests"
-        }
-      ],
-      "name":"Super_pipeline",
-      "materials":[
-      ],
-      "label":"${COUNT}"
+        "stages": [
+            {
+                "name": "Deploy"
+            },
+            {
+                "name": "tests"
+            }
+        ],
+        "name": "Super_pipeline",
+        "materials": [
+        ],
+        "label": "${COUNT}"
     }
 
     DATA1 = {
-       "name":"Deploy"
+        "name": "Deploy"
     }
 
     def setUp(self):

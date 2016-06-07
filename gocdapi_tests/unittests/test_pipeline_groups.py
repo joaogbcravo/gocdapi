@@ -1,15 +1,14 @@
-import mock
-
 import unittest
 
+import mock
+
+from gocdapi.custom_exceptions import GoCdApiException
 from gocdapi.go import Go
 from gocdapi.pipeline_group import PipelineGroup
 from gocdapi.pipeline_groups import PipelineGroups
 
-from gocdapi.custom_exceptions import GoCdApiException
 
 class TestPipelineGroups(unittest.TestCase):
-
     DATA0 = """
         [
             {

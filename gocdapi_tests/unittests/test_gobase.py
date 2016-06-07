@@ -1,15 +1,14 @@
-import mock
-
 import unittest
 
-from gocdapi.gobase import GoBase
-from gocdapi.go import Go
+import mock
 from requests import Response
 
 from gocdapi.custom_exceptions import GoCdApiException
+from gocdapi.go import Go
+from gocdapi.gobase import GoBase
+
 
 class TestGoBase(unittest.TestCase):
-
     @mock.patch.object(GoBase, '_poll')
     def setUp(self, gobase_poll):
         gobase_poll.return_value = True
@@ -37,6 +36,7 @@ class TestGoBase(unittest.TestCase):
     def test_load_json_data(self):
         with self.assertRaises(GoCdApiException):
             self.gobase.load_json_data("not a json object")
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -44,7 +44,6 @@ EMPTY_PIPELINE = '''\
 </pipeline>
 '''.strip()
 
-
 UPDATED_PIPELINE = '''\
 <pipeline name="%s">
   <materials>

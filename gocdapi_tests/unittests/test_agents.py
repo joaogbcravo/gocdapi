@@ -1,15 +1,14 @@
-import mock
-
 import unittest
 
-from gocdapi.go import Go
-from gocdapi.agents import Agents
-from gocdapi.agent import Agent
+import mock
 
+from gocdapi.agent import Agent
+from gocdapi.agents import Agents
 from gocdapi.custom_exceptions import GoCdApiException
+from gocdapi.go import Go
+
 
 class TestAgents(unittest.TestCase):
-
     DATA0 = """
         [
             {

@@ -1,10 +1,9 @@
-
-import unittest
 import logging
 import time
+import unittest
 
-from gocdapi_tests.systests.pipeline_configs import EMPTY_PIPELINE
 from gocdapi.go import Go
+from gocdapi_tests.systests.pipeline_configs import EMPTY_PIPELINE
 
 log = logging.getLogger(__name__)
 
@@ -12,8 +11,8 @@ DEFAULT_GO_URL = "http://localhost"
 DEFAULT_GO_PORT = 8153
 DEFAULT_GO_PIPELINE_GROUP = "GO_SYSTESTS"
 
-class BaseSystemTest(unittest.TestCase):
 
+class BaseSystemTest(unittest.TestCase):
     def pipeline_group_name(self):
         return DEFAULT_GO_PIPELINE_GROUP
 

@@ -1,23 +1,20 @@
-import os
-import time
 import Queue
-import random
-import logging
 import datetime
-
-import threading
+import logging
+import os
 import subprocess
-import pkg_resources
+import sys
+import threading
+import time
+import urllib
+import zipfile
 
-from gocdapi.go import Go
 from gocdapi.custom_exceptions import GoCdApiException
+from gocdapi.go import Go
 
 logging.basicConfig()
 log = logging.getLogger(__name__)
 
-import sys
-import urllib
-import zipfile
 
 GO_VERSION = "14.3.0-1186"
 
@@ -26,12 +23,13 @@ def dlProgress(count, blockSize, totalSize):
     percentage = (blockSize * count * 100) / totalSize
     sys.stdout.write("\r%s%%" % percentage)
 
+
 def get_default_configuration():
     systests_dir, _ = os.path.split(__file__)
     return "%s/%s" % (systests_dir, "cruise-config.xml")
 
-class StreamThread(threading.Thread):
 
+class StreamThread(threading.Thread):
     def __init__(self, name, q, stream, fn_log):
         threading.Thread.__init__(self)
         self.name = name
@@ -58,14 +56,14 @@ def download_zip(url, destiny_zip_file):
 
 def run_command(command, env_variables=None):
     return subprocess.Popen(command, env=env_variables,
-        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
 class GoLauncher(object):
     """
     """
 
-    def __init__(self, runnable_type, working_directory, version = None):
+    def __init__(self, runnable_type, working_directory, version=None):
         """
         """
         self.version = version or GO_VERSION
@@ -110,7 +108,6 @@ class GoLauncher(object):
             except Exception as e:
                 raise Exception("Failed to unzip %s - %s " % (zip_file, e))
 
-
     def stop(self):
         """
         """
@@ -135,7 +132,7 @@ class GoServerLauncher(GoLauncher):
     """
     """
 
-    def __init__(self, working_directory, version = None, config_xml = None):
+    def __init__(self, working_directory, version=None, config_xml=None):
         """
         """
         GoLauncher.__init__(self, "server", working_directory, version)
@@ -161,12 +158,12 @@ class GoServerLauncher(GoLauncher):
     def start(self, timeout=60):
         config_source = "/Users/joaocravo/Work/spikes/gocdapi/gocdapi_utils/"
         env_variables = {
-                "DAEMON": "Y",
-                "JAVA_HOME": "/usr",
-                "GO_SERVER_PORT": "%s" % self.http_port,
-                "GO_SERVER_SSL_PORT": "%s" %  self.https_port,
-                "GO_CONFIG_DIR": config_source
-            }
+            "DAEMON": "Y",
+            "JAVA_HOME": "/usr",
+            "GO_SERVER_PORT": "%s" % self.http_port,
+            "GO_SERVER_SSL_PORT": "%s" % self.https_port,
+            "GO_CONFIG_DIR": config_source
+        }
 
         process = self._start(env_variables)
 
@@ -200,7 +197,7 @@ class GoAgentLauncher(GoLauncher):
     """
     """
 
-    def __init__(self, working_directory, version = None):
+    def __init__(self, working_directory, version=None):
         """
         """
         GoLauncher.__init__(self, "agent", working_directory, version)
@@ -290,4 +287,3 @@ if __name__ == '__main__':
     log.warning("INFO: ...now to shut it down!")
     go_agent_laucher.stop()
     go_server_laucher.stop()
-

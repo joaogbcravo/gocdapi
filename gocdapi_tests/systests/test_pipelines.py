@@ -1,16 +1,12 @@
-'''
+"""
 System tests for `gocdapi.go` module.
-'''
+"""
 import unittest
 
 from gocdapi_tests.systests.base import BaseSystemTest
-from gocdapi_tests.systests.pipeline_configs import EMPTY_PIPELINE
-from gocdapi_tests.test_utils.random_strings import random_string
 
-from gocdapi.custom_exceptions import GoCdApiException
 
 class TestPipelines(BaseSystemTest):
-
     def test_pipeline_pause_unpause_and_is_paused(self):
         self.pipeline = self.go.pipelines.values()[0]
 
@@ -33,6 +29,7 @@ class TestPipelines(BaseSystemTest):
         self.pipeline = self.go.pipelines.values()[0]
         self.pipeline.unpause()
         self.assertFalse(self.pipeline.is_locked())
+
 
 if __name__ == '__main__':
     unittest.main()

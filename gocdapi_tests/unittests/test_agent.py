@@ -1,15 +1,12 @@
-import mock
-
 import unittest
 
-from gocdapi.go import Go
-from gocdapi.agents import Agents
-from gocdapi.agent import Agent
+import mock
 
-from gocdapi.custom_exceptions import GoCdApiException
+from gocdapi.agent import Agent
+from gocdapi.go import Go
+
 
 class TestAgent(unittest.TestCase):
-
     DATA0 = {
         "resources": [],
         "sandbox": "/var/lib/go-agent",
@@ -17,8 +14,8 @@ class TestAgent(unittest.TestCase):
         "free_space": "35.7 GB",
         "ip_address": "127.0.0.1",
         "agent_name": "vagrant-ubuntu-trusty-32",
-        "environments":[],
-        "status":"Idle",
+        "environments": [],
+        "status": "Idle",
         "uuid": "a8b7c2b4-3986-476a-a797-abb3a065587e",
         "build_locator": ""
     }
@@ -39,6 +36,7 @@ class TestAgent(unittest.TestCase):
 
     def test_repr(self):
         self.assertEquals(str(self.agent), 'Agent @ %s' % self.baseurl)
+
 
 if __name__ == '__main__':
     unittest.main()
