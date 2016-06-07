@@ -57,7 +57,7 @@ class Pipeline(GoBase):
             pause_cause (str): reason to pause the pipeline
         """
         url = self.build_url('pause')
-        self.do_post(url, {'pauseCause': pause_cause})
+        self.do_post(url, data={'pauseCause': pause_cause}, headers={'Confirm': True})
 
     def unpause(self):
         """Unpauses the pipeline.
@@ -65,7 +65,7 @@ class Pipeline(GoBase):
         Will do a POST request to go/api/pipelines/PIPELINE_NAME/unpause
         """
         url = self.build_url('unpause')
-        self.do_post(url)
+        self.do_post(url, headers={'Confirm': True})
 
     def status(self):
         """Gets information about status of pipeline.

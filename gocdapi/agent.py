@@ -1,6 +1,7 @@
 """
 Module for gocdapi Agent class
 """
+import json
 
 from gocdapi.gobase import GoBase
 
@@ -52,26 +53,40 @@ class Agent(GoBase):
     def enable(self):
         """Enables the agent
 
-        Will do a POST request to go/api/agents/UUID/enable
+        Will do a PATCH request to go/api/agents/UUID
         """
-        url = self.build_url('enable')
-        self.do_post(url)
+
+        headers = {
+            'Accept': 'application/vnd.go.cd.v2+json',
+            'Content-Type': 'application/json',
+        }
+        data = {'agent_config_state': 'Enabled'}
+
+        self.do_patch(self.url, data=json.dumps(data), headers=headers)
 
     def disable(self):
         """Disables the agent
 
-        Will do a POST request to go/api/agents/UUID/disable
+        Will do a PATCH request to go/api/agents/UUID
         """
-        url = self.build_url('disable')
-        self.do_post(url)
+        headers = {
+            'Accept': 'application/vnd.go.cd.v2+json',
+            'Content-Type': 'application/json',
+        }
+        data = {'agent_config_state': 'Disabled'}
+
+        self.do_patch(self.url, data=json.dumps(data), headers=headers)
 
     def delete(self):
         """Deletes the agent
 
-        Will do a POST request to go/api/agents/UUID/delete
+        Will do a DELETE request to go/api/agents/UUID
         """
-        url = self.build_url('delete')
-        self.do_post(url)
+        headers = {
+            'Accept': 'application/vnd.go.cd.v2+json',
+        }
+
+        self.do_delete(self.url, headers=headers)
 
     def job_run_history(self, offset=0):
         """Gets the history of the jobs run on the agent
